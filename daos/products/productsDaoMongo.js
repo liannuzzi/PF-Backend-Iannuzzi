@@ -1,4 +1,4 @@
-const MongoContainer = require("../../utils/mongoContainer");
+const MongoContainer = require("../../containers/mongoContainer");
 const Product = require("../../schemas/productSchemaMongo");
 
 class ProductDAO extends MongoContainer {

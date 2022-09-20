@@ -15,7 +15,7 @@ class MongoContainer {
     try {
       return await mongoose.connect(this.uriString);
     } catch (err) {
-      throw new Error(`ERROR DE CONEXION + ${err}`);
+      throw new Error(`ERROR DE CONEXION + ${err.message}`);
     }
   }
 
@@ -24,7 +24,7 @@ class MongoContainer {
       const result = await this.Model.find();
       return result;
     } catch (err) {
-      throw new Error(`ERROR AL BUSCAR DATOS: ${err}`);
+      throw new Error(`ERROR AL BUSCAR DATOS: ${err.message}`);
     }
   }
 
@@ -34,7 +34,7 @@ class MongoContainer {
       const result = await this.Model.find({ _id: objectId });
       return result;
     } catch (err) {
-      throw new Error(`ERROR AL BUSCAR ID: ${err}`);
+      throw new Error(`ERROR AL BUSCAR ID: ${err.message}`);
     }
   }
 
@@ -44,12 +44,13 @@ class MongoContainer {
       const result = await document.save();
       return result;
     } catch (err) {
-      throw new Error(`ERROR AL GUARDAR: ${err}`);
+      throw new Error(`ERROR AL GUARDAR: ${err.message}`);
     }
   }
 
   async editProduct(product, id) {
     const objectId = mongoose.Types.ObjectId(id);
+
     try {
       const result = await this.Model.updateOne(
         { _id: objectId },
@@ -67,8 +68,9 @@ class MongoContainer {
       );
       return result;
     } catch (err) {
-      throw new Error(`ERROR AL EDITAR: ${err}`);
+      throw new Error(`ERROR AL EDITAR: ${err.message}`);
     }
+
   }
 
   async deleteById(id) {
@@ -77,7 +79,7 @@ class MongoContainer {
       const result = await this.Model.deleteOne({ _id: objectId });
       return result;
     } catch (err) {
-      throw new Error(`ERROR AL ELIMINAR: ${err}`);
+      throw new Error(`ERROR AL ELIMINAR: ${err.message}`);
     }
   }
 
@@ -87,7 +89,7 @@ class MongoContainer {
       const result = await document.save();
       return result;
     } catch (err) {
-      throw new Error(`ERROR AL GUARDAR: ${err}`);
+      throw new Error(`ERROR AL GUARDAR: ${err.message}`);
     }
   }
 
@@ -97,7 +99,7 @@ class MongoContainer {
       const result = await this.Model.deleteOne({ _id: objectId });
       return result;
     } catch (err) {
-      throw new Error(`ERROR AL ELIMINAR: ${err}`);
+      throw new Error(`ERROR AL ELIMINAR: ${err.message}`);
     }
   }
 
@@ -110,7 +112,7 @@ class MongoContainer {
       );
       return result;
     } catch (err) {
-      throw new Error(`ERROR AL BUSCAR ID: ${err}`);
+      throw new Error(`ERROR AL BUSCAR ID: ${err.message}`);
     }
   }
 
@@ -135,7 +137,7 @@ class MongoContainer {
       );
       return result;
     } catch (err) {
-      throw new Error(`ERROR AL GUARDAR: ${err}`);
+      throw new Error(`ERROR AL GUARDAR: ${err.message}`);
     }
   }
 
@@ -150,7 +152,7 @@ class MongoContainer {
       );
       return result;
     } catch (err) {
-      throw new Error(`ERROR AL ELIMINAR: ${err}`);
+      throw new Error(`ERROR AL ELIMINAR: ${err.message}`);
     }
   }
 }

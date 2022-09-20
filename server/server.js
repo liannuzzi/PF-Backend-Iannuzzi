@@ -1,13 +1,22 @@
 const express = require("express");
 const app = express();
+const {dbType}=require('../config')
+let cartDAO
+let productDAO
 
-// MONGO DB
-// let cartDAO = require("../daos/carts/cartsDaoMongo")
-// let productDAO = require("../daos/products/productsDaoMongo")
+function assignDao(){
+if(dbType==='mongo'){
+   cartDAO = require("../daos/carts/cartsDaoMongo")
+   productDAO = require("../daos/products/productsDaoMongo")
+  console.log(productDAO)
+}else if(dbType==='firebase'){
+ cartDAO = require("../daos/carts/cartsDaoFirebase");
+ productDAO = require("../daos/products/productsDaoFirebase");
+}
+}
 
-//FIREBASE
-let cartDAO = require("../daos/carts/cartsDaoFirebase");
-let productDAO = require("../daos/products/productsDaoFirebase");
+assignDao()
+
 
 const { Router } = express;
 const routerProduct = Router();
@@ -18,11 +27,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/products", routerProduct);
 app.use("/api/cart", routerCart);
 
-const Contenedor = require("../utils/products-container");
+const Contenedor = require("../containers/products-container");
 const fileName = "./files/products.json";
 const products = new Contenedor(fileName);
 
-const ContainerCart = require("../utils/cart-container");
+const ContainerCart = require("../containers/cart-container");
 const cartFileName = "./files/cart.json";
 const cart = new ContainerCart(cartFileName);
 
@@ -49,7 +58,7 @@ routerProduct.post("/", async (req, res) => {
     const resultado = await productDAO.saveProduct(req.body);
     res.json(resultado);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -58,7 +67,7 @@ routerProduct.put("/:id", async (req, res) => {
     const resultado = await productDAO.editProduct(req.body, req.params.id);
     res.json(resultado);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -67,7 +76,7 @@ routerProduct.delete("/:id", async (req, res) => {
     const resultado = await productDAO.deleteById(req.params.id);
     res.json(resultado);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -76,7 +85,7 @@ routerCart.post("/", async (req, res) => {
     const resultado = await cartDAO.createCart();
     res.json(resultado);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -85,7 +94,7 @@ routerCart.delete("/:id", async (req, res) => {
     const resultado = await cartDAO.deleteCart(req.params.id);
     res.json(resultado);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -103,7 +112,7 @@ routerCart.post("/:id/productos", async (req, res) => {
     const resultado = await cartDAO.addProductToCart(req.params.id, req.body);
     res.json(resultado);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -115,7 +124,7 @@ routerCart.delete("/:id/productos/:idProd", async (req, res) => {
     );
     res.json(resultado);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
