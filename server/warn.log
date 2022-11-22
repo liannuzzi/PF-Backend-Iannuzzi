@@ -1,0 +1,8 @@
+{"level":"error","message":"Error: TypeError: Cannot read properties of undefined (reading 'username')"}
+{"level":"error","message":"Error: TypeError: Cannot read properties of undefined (reading 'username')"}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: carts validation failed: user: Path `user` is required."}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: carts validation failed: user: Path `user` is required."}
+{"level":"error","message":"Error: TypeError: Cannot read properties of undefined (reading 'user')"}
+{"level":"error","message":"Error: TypeError: Cannot read properties of undefined (reading 'user')"}
+{"level":"error","message":"Error: TypeError: Cannot read properties of undefined (reading 'user')"}
+{"level":"error","message":"Error: ReferenceError: Cannot access 'resultado' before initialization"}
