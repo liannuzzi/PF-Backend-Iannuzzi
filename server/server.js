@@ -24,8 +24,7 @@ const cluster = require("cluster");
 const numCPUs = require("os").cpus().length;
 const clusterMode = process.argv[2] === "CLUSTER";
 const logger = require("../logger/logger_config");
-
-
+const config = require("../config");
 
 if (clusterMode && cluster.isPrimary) {
   console.log("Cluster iniciado");
@@ -113,8 +112,7 @@ if (clusterMode && cluster.isPrimary) {
   app.use(
     session({
       store: MongoStore.create({
-        mongoUrl:
-          "mongodb+srv://lucasiannu:wxRk2hMHkRguBXdU@cluster0.l96bh3b.mongodb.net/ecommerce?retryWrites=true&w=majority",
+        mongoUrl: config.uriString,
         ttl: 60,
         mongoOptions: advancedOptions,
       }),
@@ -152,7 +150,6 @@ if (clusterMode && cluster.isPrimary) {
 
   app.get("/", async (req, res) => {
     res.json("Bienvenido a la HOME");
-    
   });
 
   routerProduct.get("/", async (req, res) => {
@@ -262,7 +259,7 @@ if (clusterMode && cluster.isPrimary) {
     try {
       const result = await cartDAO.getAllCartProducts(req.params.id);
       if (result[0].products) {
-        const cartProducts=result[0].products
+        const cartProducts = result[0].products;
         const resultado = await orderDAO.createOrder(cartProducts);
 
         sendMailNewOrder(result[0].products, "Nueva orden ingresada");

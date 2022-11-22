@@ -1,5 +1,6 @@
-const accountSid = 'AC4ddafc0354f04e31f26acf3b71b6a001'; 
-const authToken = 'bfd6b36b953add094207288df668a5e8'; 
+const config = require("../config");
+const accountSid = config.twilio_sid; 
+const authToken = config.twilio_token; 
 const client = require('twilio')(accountSid, authToken); 
 const config = require("../config");
 const adminNum=config.adminNum
