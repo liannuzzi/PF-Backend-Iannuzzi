@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const config = require("../config");
 const uriString = config.uriString;
 
+
 class MongoContainer {
   constructor(model) {
     this.uriString = uriString;
@@ -70,7 +71,6 @@ class MongoContainer {
     } catch (err) {
       throw new Error(`ERROR AL EDITAR: ${err.message}`);
     }
-
   }
 
   async deleteById(id) {
@@ -131,6 +131,7 @@ class MongoContainer {
               description: product.description,
               productCode: product.productCode,
               stock: product.stock,
+              quantity:product.quantity
             },
           },
         }
@@ -153,6 +154,44 @@ class MongoContainer {
       return result;
     } catch (err) {
       throw new Error(`ERROR AL ELIMINAR: ${err.message}`);
+    }
+  }
+
+  async findUser(user) {
+    try {
+      const result = await this.Model.findOne({ username: user });
+      return result;
+    } catch (error) {
+      console.log("No se puede leer la base de datos", error);
+    }
+  }
+
+  async findUserById(id) {
+    try {
+      const result = await this.Model.findOne({ _id: id });
+      return result;
+    } catch (error) {
+      console.log("No se puede leer la base de datos", error);
+    }
+  }
+
+  async saveUser(newUser) {
+    try {
+      const document = new this.Model(newUser);
+      const result = await this.Model.save();
+      return result;
+    } catch (err) {
+      throw new Error(`ERROR AL GUARDAR: ${err}`);
+    }
+  }
+
+  async createOrder(products) {
+    try {
+      const document = new this.Model({products:products});
+      const result = await document.save();
+      return result;
+    } catch (err) {
+      throw new Error(`ERROR AL GUARDAR: ${err.message}`);
     }
   }
 }
