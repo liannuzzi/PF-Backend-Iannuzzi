@@ -1,4 +1,4 @@
-const MongoContainer = require("../../containers/mongoContainer");
+const MongoContainer = require("../../src/database/mongoContainer");
 const Usuario = require("../../schemas/usersSchemaMongo");
 
 class UsuarioDao extends MongoContainer {

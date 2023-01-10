@@ -1,30 +1,28 @@
 const express = require("express");
 const app = express();
-const { dbType } = require("../config");
-const { Router } = express;
-const routerProduct = Router();
-const routerCart = Router();
-const cartDAO = require("../daos/carts/cartsDaoMongo");
-const productDAO = require("../daos/products/productsDaoMongo");
+var path = require('path');
+const { Server: HTTPServer } = require("http");
+const { Server: SocketServer } = require("socket.io");
+const httpServer = new HTTPServer(app);
+const socketServer = new SocketServer(httpServer);
+const messageDAO = require("../daos/messages/messagesDaoMongo")
 const usuarioDAO = require("../daos/users/usuariosDao");
-const orderDAO = require("../daos/orders/ordersDaoMongo");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
-const { checkPassword, hashPassword } = require("../utils/utils");
-const session = require("express-session");
-const MongoStore = require("connect-mongo");
+const jwt=require('jsonwebtoken')
+const JWTStrategy=require('passport-jwt').Strategy
+const ExtractJWT=require('passport-jwt').ExtractJwt
+const { checkPassword, hashPassword } = require("../src/utils/utils");
 const { default: mongoose } = require("mongoose");
 const advancedOptions = { useNewUrlParser: true, useUnifiedTopology: true };
 const {
-  sendMailNewUser,
-  sendMailNewOrder,
+  sendMailNewUser
 } = require("../notifications/mailing");
-const { sendMessageNewOrder } = require("../notifications/messaging");
 const cluster = require("cluster");
 const numCPUs = require("os").cpus().length;
 const clusterMode = process.argv[2] === "CLUSTER";
 const logger = require("../logger/logger_config");
-const config = require("../config");
+
 
 if (clusterMode && cluster.isPrimary) {
   console.log("Cluster iniciado");
@@ -39,8 +37,19 @@ if (clusterMode && cluster.isPrimary) {
 } else {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  app.use("/api/products", routerProduct);
-  app.use("/api/cart", routerCart);
+
+
+  // ROUTERS
+
+  const ProductRouter = require("../src/routes/product");
+  const CartRouter = require("../src/routes/cart");
+
+  app.use("/products", ProductRouter);
+  app.use("/carts", CartRouter);
+
+  // AUTENTICACION
+
+  // LogIn
 
   passport.use(
     "login",
@@ -55,6 +64,8 @@ if (clusterMode && cluster.isPrimary) {
       }
     })
   );
+
+  // SignUp
 
   passport.use(
     "signup",
@@ -79,7 +90,7 @@ if (clusterMode && cluster.isPrimary) {
           address: address,
           age: age,
           name: name,
-          telephone: telephone,
+          telephone: telephone
         };
         const generateUser = await usuarioDAO.saveUser(newUser);
         if (generateUser) {
@@ -97,187 +108,116 @@ if (clusterMode && cluster.isPrimary) {
     )
   );
 
+passport.use(new JWTStrategy({
+  secretOrKey:'top-secret',
+  jwtFromRequest:ExtractJWT.fromUrlQueryParameter('secret_token')
+}, async(token,done)=>{
+  try {
+    return done(null,token.user)
+  } catch (error) {
+    done(error)
+  }
+}))
+
   passport.serializeUser((user, done) => {
     logger.log("info", `User serialize: ${user}`);
     done(null, user._id);
   });
 
   passport.deserializeUser(async (id, done) => {
-    idUser = mongoose.Types.ObjectId(id);
-    const user = await usuarioDAO.findUserById(idUser);
+    const idUser = mongoose.Types.ObjectId(id);
+    const user = await usuarioDAO.findUserById(idUser)
     logger.log("info", `User deserialize: ${user}`);
     done(null, user);
   });
 
-  app.use(
-    session({
-      store: MongoStore.create({
-        mongoUrl: config.uriString,
-        ttl: 60,
-        mongoOptions: advancedOptions,
-      }),
-
-      secret: "secret_String",
-      resave: false,
-      saveUninitialized: true,
-    })
-  );
-
   app.use(passport.initialize());
-  app.use(passport.session());
+
+  // LOGIN CON JWT
 
   app.post(
     "/login",
     passport.authenticate("login", {
       failureRedirect: "/login",
+      session:false
     }),
     (req, res) => {
-      req.session.user = req.user;
-      res.redirect("/");
+      req.login(req.user,{session:false},async(err)=>{
+        if(err) return err
+        const body={_id:req.user._id}
+        const token=jwt.sign({user:body},'top-secret')
+        res.json({message:'Login exitoso',
+        token:token})
+      })
     }
   );
+
+// SIGN UP
 
   app.post(
     "/signup",
     passport.authenticate("signup", {
       failureRedirect: "/signup",
+      session:false
     }),
     (req, res) => {
-      req.session.user = req.user;
-      res.redirect("/login");
+      res.json({message:"Registro exitoso"});
     }
   );
 
-  app.get("/", async (req, res) => {
-    res.json("Bienvenido a la HOME");
+  // TEST API
+  app.get("/profile", passport.authenticate('jwt',{session:false}), async (req, res) => {
+    res.json({message:"Bienvenido a la HOME",
+              user:req.user,
+            token:req.query.secret_token});
   });
 
-  routerProduct.get("/", async (req, res) => {
+
+  // WEB SOCKET
+
+
+  app.get('/chat', (req, res) => {
+    res.sendFile( path.join(__dirname , '../webSockets/index.html'));
+  })
+  
+  app.get('/chat/admin', (req, res) => {
+    res.sendFile( path.join(__dirname , '../webSockets/indexAdmin.html'));
+  })
+
+
+let messages = "";
+
+async function getMsg(){
     try {
-      const allProducts = await productDAO.getAll();
-      res.json(allProducts);
-    } catch (err) {
-      res.status(400).json({ error: err.message });
-      logger.log("error", `Error: ${err}`);
+      messages= await messageDAO.getAllMsg()
+    } catch (error) {
+        console.log("Error:", error);
     }
+  }
+  
+ 
+  socketServer.on("connection", (socket) => {
+    getMsg()
+    console.log("Nuevo cliente conectado");
+    socketServer.emit("INIT", "Bienvenido al WebSocket", messages);
+  
+  
+    socket.on("POST_MESSAGE", (msg) => {
+      messageDAO.saveMsg(msg);
+      socketServer.emit("NEW_MESSAGE", msg);
+    });
   });
 
-  routerProduct.get("/:id", async (req, res) => {
-    try {
-      const resultado = await productDAO.getById(req.params.id);
-      res.json(resultado);
-    } catch (err) {
-      res.status(400).json({ error: err.message });
-      logger.log("error", `Error: ${err}`);
-    }
-  });
-
-  routerProduct.post("/", async (req, res) => {
-    try {
-      const resultado = await productDAO.saveProduct(req.body);
-      res.json(resultado);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-      logger.log("error", `Error: ${err}`);
-    }
-  });
-
-  routerProduct.put("/:id", async (req, res) => {
-    try {
-      const resultado = await productDAO.editProduct(req.body, req.params.id);
-      res.json(resultado);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-      logger.log("error", `Error: ${err}`);
-    }
-  });
-
-  routerProduct.delete("/:id", async (req, res) => {
-    try {
-      const resultado = await productDAO.deleteById(req.params.id);
-      res.json(resultado);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-      logger.log("error", `Error: ${err}`);
-    }
-  });
-
-  routerCart.post("/", async (req, res) => {
-    try {
-      const resultado = await cartDAO.createCart(cartUser);
-      res.json(resultado);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-      logger.log("error", `Error: ${err}`);
-    }
-  });
-
-  routerCart.delete("/:id", async (req, res) => {
-    try {
-      const resultado = await cartDAO.deleteCart(req.params.id);
-      res.json(resultado);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-      logger.log("error", `Error: ${err}`);
-    }
-  });
-
-  routerCart.get("/:id/productos", async (req, res) => {
-    try {
-      const resultado = await cartDAO.getAllCartProducts(req.params.id);
-      res.json(resultado);
-    } catch (err) {
-      res.status(400).json({ error: err.message });
-      logger.log("error", `Error: ${err}`);
-    }
-  });
-
-  routerCart.post("/:id/productos", async (req, res) => {
-    try {
-      const resultado = await cartDAO.addProductToCart(req.params.id, req.body);
-      res.json(resultado);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-      logger.log("error", `Error: ${err}`);
-    }
-  });
-
-  routerCart.delete("/:id/productos/:idProd", async (req, res) => {
-    try {
-      const resultado = await cartDAO.deleteProductFromCart(
-        req.params.id,
-        req.params.idProd
-      );
-      res.json(resultado);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-      logger.log("error", `Error: ${err}`);
-    }
-  });
-
-  routerCart.post("/:id/confirmOrder", async (req, res) => {
-    try {
-      const result = await cartDAO.getAllCartProducts(req.params.id);
-      if (result[0].products) {
-        const cartProducts = result[0].products;
-        const resultado = await orderDAO.createOrder(cartProducts);
-
-        sendMailNewOrder(result[0].products, "Nueva orden ingresada");
-        sendMessageNewOrder("Nueva orden ingresada!");
-        res.json(resultado);
-      } else {
-        res.json({ Mensaje: "Agregue productos al carrito" });
-        logger.log("warn", `Agregue productos al carrito`);
-      }
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-      logger.log("error", `Error: ${err}`);
-    }
+  app.get("*", (req, res) => {
+    logger.log(
+      "warn",
+      `Ruta no encontrada ${req.url} con el metodo ${req.method}`
+    );
+    res.status(400).send("Ruta no encontrada" + req.url);
   });
 
   const PORT = 8080;
-
-  const server = app.listen(PORT, () => {
+  httpServer.listen(PORT, () => {
     logger.log("info", `Servidor escuchando puerto ${PORT}`);
   });
 }

@@ -1,6 +1,14 @@
 const mongoose = require("mongoose");
-const config = require("../config");
-const uriString = config.uriString;
+const config = require("../../config");
+const ambiente=config.enviroment
+let uriString=''
+
+if (ambiente==="PROD"){
+   uriString = config.uriString;
+}else{
+  uriString = config.uriStringDev;
+}
+
 
 
 class MongoContainer {
@@ -60,7 +68,6 @@ class MongoContainer {
             title: product.title,
             price: product.price,
             thumbnail: product.thumbnail,
-            createdDateProd: product.createdDateProd,
             description: product.description,
             productCode: product.productCode,
             stock: product.stock,
@@ -83,9 +90,14 @@ class MongoContainer {
     }
   }
 
-  async createCart() {
+  async createCart(id) {
+    const cart= {
+      createdDate:"2022-01-01T00:00:00.000+00:00",
+      products:[],
+      user:id
+    }
     try {
-      const document = new this.Model();
+      const document = new this.Model(cart);
       const result = await document.save();
       return result;
     } catch (err) {
@@ -127,10 +139,8 @@ class MongoContainer {
               title: product.title,
               price: product.price,
               thumbnail: product.thumbnail,
-              createdDateProd: product.createdDateProd,
               description: product.description,
               productCode: product.productCode,
-              stock: product.stock,
               quantity:product.quantity
             },
           },
@@ -178,22 +188,63 @@ class MongoContainer {
   async saveUser(newUser) {
     try {
       const document = new this.Model(newUser);
-      const result = await this.Model.save();
+      const result = await document.save();
       return result;
     } catch (err) {
       throw new Error(`ERROR AL GUARDAR: ${err}`);
     }
   }
 
-  async createOrder(products) {
+  async createOrder(products,username) {
+    const order={
+      products:products,
+      user:username
+    }
     try {
-      const document = new this.Model({products:products});
+      const document = new this.Model(order);
       const result = await document.save();
       return result;
     } catch (err) {
       throw new Error(`ERROR AL GUARDAR: ${err.message}`);
     }
   }
+  
+async getUserFromCart(id) {
+  const objectId = mongoose.Types.ObjectId(id);
+  try {
+    const result = await this.Model.find(
+      { _id: objectId },
+      { user: 1, _id: 0 }
+    );
+    return result;
+  } catch (err) {
+    throw new Error(`ERROR AL BUSCAR ID: ${err.message}`);
+  }
 }
+
+async getAllMsg() {
+  try {
+    const result = await this.Model.find();
+    return result;
+  } catch {
+    (error) => {
+      console.log("No se puede leer la base de datos", error);
+    };
+  }
+}
+
+async saveMsg(object) {
+  try {
+    const document = new this.Model(object);
+    const result = await document.save();
+    return result;
+  } catch (err) {
+    throw new Error(`ERROR AL GUARDAR: ${err}`);
+  }
+}
+
+}
+
+
 
 module.exports = MongoContainer;

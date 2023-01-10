@@ -6,3 +6,59 @@
 {"level":"error","message":"Error: TypeError: Cannot read properties of undefined (reading 'user')"}
 {"level":"error","message":"Error: TypeError: Cannot read properties of undefined (reading 'user')"}
 {"level":"error","message":"Error: ReferenceError: Cannot access 'resultado' before initialization"}
+{"level":"warn","message":"Ruta no encontrada /carts con el metodo GET"}
+{"level":"warn","message":"Ruta no encontrada /login con el metodo GET"}
+{"level":"warn","message":"Ruta no encontrada /login con el metodo GET"}
+{"level":"warn","message":"Ruta no encontrada /login con el metodo GET"}
+{"level":"warn","message":"Ruta no encontrada /login con el metodo GET"}
+{"level":"warn","message":"Ruta no encontrada /login con el metodo GET"}
+{"level":"warn","message":"Ruta no encontrada /login con el metodo GET"}
+{"level":"warn","message":"Ruta no encontrada /login con el metodo GET"}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: carts validation failed: user: Path `user` is required."}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: carts validation failed: user: Path `user` is required."}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: carts validation failed: user: Path `user` is required."}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: carts validation failed: user: Path `user` is required."}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: carts validation failed: user: Path `user` is required."}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: carts validation failed: user: Path `user` is required."}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: carts validation failed: user: Path `user` is required."}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: carts validation failed: user: Path `user` is required."}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: carts validation failed: user: Path `user` is required."}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: carts validation failed: user: Path `user` is required."}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: carts validation failed: user: Path `user` is required."}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: carts validation failed: user: Path `user` is required."}
+{"level":"error","message":"Error: ReferenceError: cartDAO is not defined"}
+{"level":"error","message":"Error: ReferenceError: cartDAO is not defined"}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: orders validation failed: products.0.user: Path `user` is required."}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: orders validation failed: products.0.user: Path `user` is required."}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: orders validation failed: products.0.user: Path `user` is required."}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: orders validation failed: products.0.user: Path `user` is required."}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: orders validation failed: products.0.user: Path `user` is required."}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: orders validation failed: products.0.user: Path `user` is required."}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: orders validation failed: products.0.user: Path `user` is required."}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: orders validation failed: products.0.user: Path `user` is required."}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: products validation failed: productCode: Path `productCode` is required., description: Path `description` is required., stock: Path `stock` is required., thumbnail: Path `thumbnail` is required., price: Path `price` is required., title: Path `title` is required."}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: products validation failed: productCode: Path `productCode` is required., description: Path `description` is required., stock: Path `stock` is required., thumbnail: Path `thumbnail` is required., price: Path `price` is required., title: Path `title` is required."}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: products validation failed: productCode: Path `productCode` is required., description: Path `description` is required., stock: Path `stock` is required., thumbnail: Path `thumbnail` is required., price: Path `price` is required., title: Path `title` is required."}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: products validation failed: productCode: Path `productCode` is required., description: Path `description` is required., stock: Path `stock` is required., thumbnail: Path `thumbnail` is required., price: Path `price` is required., title: Path `title` is required."}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: products validation failed: productCode: Path `productCode` is required., description: Path `description` is required., stock: Path `stock` is required., thumbnail: Path `thumbnail` is required., price: Path `price` is required., title: Path `title` is required."}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: products validation failed: productCode: Path `productCode` is required., description: Path `description` is required., stock: Path `stock` is required., thumbnail: Path `thumbnail` is required., price: Path `price` is required., title: Path `title` is required."}
+{"level":"error","message":"Error: Error: ERROR AL GUARDAR: products validation failed: productCode: Path `productCode` is required., description: Path `description` is required., stock: Path `stock` is required., thumbnail: Path `thumbnail` is required., price: Path `price` is required., title: Path `title` is required."}
+{"level":"warn","message":"Ruta no encontrada /favicon.ico con el metodo GET"}
+{"level":"warn","message":"Ruta no encontrada /favicon.ico con el metodo GET"}
+{"level":"warn","message":"Ruta no encontrada /favicon.ico con el metodo GET"}
+{"level":"warn","message":"Ruta no encontrada /favicon.ico con el metodo GET"}
+{"level":"warn","message":"Ruta no encontrada /favicon.ico con el metodo GET"}
+{"level":"warn","message":"Ruta no encontrada /%7D con el metodo GET"}
+{"level":"warn","message":"Ruta no encontrada /favicon.ico con el metodo GET"}
+{"level":"warn","message":"Ruta no encontrada /favicon.ico con el metodo GET"}
+{"level":"warn","message":"Ruta no encontrada /public/index.js con el metodo GET"}
+{"level":"warn","message":"Ruta no encontrada /favicon.ico con el metodo GET"}
+{"level":"warn","message":"Ruta no encontrada /public/index.js con el metodo GET"}
+{"level":"warn","message":"Ruta no encontrada /favicon.ico con el metodo GET"}
+{"level":"warn","message":"Ruta no encontrada /public/index.js con el metodo GET"}
+{"level":"warn","message":"Ruta no encontrada /favicon.ico con el metodo GET"}
+{"level":"warn","message":"Ruta no encontrada / con el metodo GET"}
+{"level":"warn","message":"Ruta no encontrada /script.js con el metodo GET"}
+{"level":"warn","message":"Ruta no encontrada /script.js con el metodo GET"}
+{"level":"warn","message":"Ruta no encontrada /script.js con el metodo GET"}
+{"level":"warn","message":"Ruta no encontrada / con el metodo GET"}

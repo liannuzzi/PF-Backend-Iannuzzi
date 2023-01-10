@@ -1,7 +1,7 @@
 const MongoContainer = require("../../src/database/mongoContainer");
-const Cart = require("../../schemas/cartSchemaMongo");
+const Message = require("../../schemas/messageSchemaMongo");
 
-class CartDAO extends MongoContainer {
+class MessageDAO extends MongoContainer {
   constructor(Model) {
     super(Model);
     this.connect().catch(err => {
@@ -10,6 +10,6 @@ class CartDAO extends MongoContainer {
   }
 }
 
-const cartDAO = new CartDAO(Cart);
+const messageDAO = new MessageDAO(Message);
 
-module.exports = cartDAO;
+module.exports = messageDAO;
